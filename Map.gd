@@ -15,6 +15,8 @@ var water_height = -.8;
 var ground_height = 0;
 var hill_height = .65;
 
+var grid;
+
 var mapGenerator = preload("res://util/MapGenerator.gd").new();
 
 
@@ -25,6 +27,13 @@ func _input(event):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	grid = [];
+	grid.resize(24);
+	for g in grid:
+		g = [];
+		g.resize(24);
+	
+	
 	mapGenerator.GenerateMap();
 
 	
