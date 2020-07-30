@@ -8,23 +8,34 @@ var sand_texture = load("res://img/ground/sand.png");
 var leaves_texture = load("res://img/ground/leaves.png");
 
 
-
+var ground = null;
 
 var mapGenerator = preload("res://util/MapGenerator.gd").new();
 
+
+func _input(event):
+	if Input.is_action_pressed("regenerate_map"):
+		RegenerateMap();
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	mapGenerator.GenerateMap();
 	
+	
+	
+func RegenerateMap():
 		# Create terrain resource and give it a size.
 	# It must be either 513, 1025, 2049 or 4097.
 	var terrain_data = HTerrainData.new()
-	terrain_data.resize(128);
+	terrain_data.resize(32);
 	
-	var noise = OpenSimplexNoise.new()
-	var noise_multiplier = 50.0
+	var noise = OpenSimplexNoise.new();
+	randomize();
+	noise.seed = randi();
+	noise.persistence = 10;
+	var noise_multiplier = 1.0;
+	
 
 	# Get access to terrain maps you want to modify
 	var heightmap: Image = terrain_data.get_image(HTerrainData.CHANNEL_HEIGHT)
@@ -42,7 +53,11 @@ func _ready():
 		for x in heightmap.get_width():
 			
 			# Generate height
-			var h = noise_multiplier * noise.get_noise_2d(x, z)
+			var h = noise_multiplier * noise.get_noise_2d(x, z);
+			if(h > .45):
+				h = 5;
+			else:
+				h =0;
 			
 			# Getting normal by generating extra heights directly from noise,
 			# so map borders won't have seams in case you stitch them
@@ -81,8 +96,13 @@ func _ready():
 	terrain.set_data(terrain_data)
 	terrain.set_ground_texture(0, HTerrain.GROUND_ALBEDO_BUMP, grass_texture)
 	terrain.set_ground_texture(1, HTerrain.GROUND_ALBEDO_BUMP, sand_texture)
-	terrain.set_ground_texture(2, HTerrain.GROUND_ALBEDO_BUMP, leaves_texture)
-	add_child(terrain);
+	terrain.set_ground_texture(2, HTerrain.GROUND_ALBEDO_BUMP, leaves_texture);
+	
+	if ground != null:
+		remove_child(ground);
+	
+	ground = terrain;
+	add_child(ground);
 	
 	# No need to call this, but you may need to if you edit the terrain later on
 	#terrain.update_collider()
