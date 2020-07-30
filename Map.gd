@@ -1,3 +1,5 @@
+#warning-ignore-all:unused_variable
+
 extends Spatial
 
 const HTerrain = preload("res://addons/zylann.hterrain/hterrain.gd");
@@ -9,6 +11,9 @@ var leaves_texture = load("res://img/ground/leaves.png");
 
 
 var ground = null;
+var water_height = -.8;
+var ground_height = 0;
+var hill_height = .65;
 
 var mapGenerator = preload("res://util/MapGenerator.gd").new();
 
@@ -21,8 +26,7 @@ func _input(event):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	mapGenerator.GenerateMap();
-	
-	
+
 	
 func RegenerateMap():
 		# Create terrain resource and give it a size.
@@ -54,10 +58,20 @@ func RegenerateMap():
 			
 			# Generate height
 			var h = noise_multiplier * noise.get_noise_2d(x, z);
-			if(h > .45):
+			if(h > hill_height):
 				h = 5;
-			else:
-				h =0;
+			else: 
+				if(h < water_height):
+					h =-5;
+				else:
+					if(h <= hill_height && h > ground_height):
+						var dist = hill_height - ground_height;
+						h = ((h - ground_height) / (hill_height - ground_height)) * 2 - 1;
+						h = sin(h);
+						h = sin(h) * 2.5 + 2.5;
+
+
+						
 			
 			# Getting normal by generating extra heights directly from noise,
 			# so map borders won't have seams in case you stitch them
