@@ -1,4 +1,18 @@
-[gd_resource type="Environment" format=2]
+[gd_resource type="Environment" load_steps=2 format=2]
+
+[sub_resource type="ProceduralSky" id=1]
+sky_energy = 1.39
+ground_energy = 0.46
+sun_color = Color( 0.921569, 0.909804, 0.662745, 1 )
+sun_energy = 1.93
 
 [resource]
+background_mode = 2
+background_sky = SubResource( 1 )
+ambient_light_energy = 0.0
 ssao_enabled = true
+ssao_radius = 1.89
+ssao_intensity = 75.67
+ssao_intensity2 = 8.11
+ssao_bias = 0.565
+ssao_light_affect = 0.16

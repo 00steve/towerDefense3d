@@ -19,15 +19,21 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/zylann.hterrain/hterrain_resource_saver.gd"
 }, {
-"base": "Reference",
+"base": "Node",
 "class": "MapGenerator",
 "language": "GDScript",
 "path": "res://util/MapGenerator.gd"
+}, {
+"base": "Reference",
+"class": "MapTile",
+"language": "GDScript",
+"path": "res://util/MapTile.gd"
 } ]
 _global_script_class_icons={
 "HTerrainDataLoader": "",
 "HTerrainDataSaver": "",
-"MapGenerator": ""
+"MapGenerator": "",
+"MapTile": ""
 }
 
 [application]
