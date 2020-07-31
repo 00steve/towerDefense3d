@@ -19,7 +19,8 @@ func _ready():
 
 
 func GenerateMap():
-	mapGenerator.GenerateMap($ground,2);
+	mapGenerator.GenerateMap($ground,6);
+	self.remove_child($ground);
 	self.add_child(mapGenerator.GetMapNode());
 	#mapGenerator.GenerateMap($Ground1);
 	

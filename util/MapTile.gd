@@ -1,24 +1,18 @@
 class_name MapTile
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
+
 var mesh = null;
-var container = null;
+var offset = null;
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-func GetTile():
-	return container;
-
-func NewInstance(offsetX,offsetY):
+func NewInstance(offsetX,offsetZ):
 	
-	container = Spatial.new();
-	container.global_transform.origin = Vector3(offsetX,0,offsetY);
-	container.add_child(mesh);
+	var container = Spatial.new();
+	var newMesh = MeshInstance.new();
+	newMesh.mesh = mesh.get_mesh();
+	container.add_child(newMesh);
+	var finalPos = Vector3(offsetX-offset.x,0,offsetZ-offset.z);
+	container.global_transform.origin = finalPos;
 	return container;
 
 
@@ -26,18 +20,7 @@ func Setup(meshInstance):
 	mesh = meshInstance;
 	print("setup tile " + mesh.get_name());
 	var aabb = mesh.get_aabb();
-	var offset = Vector2(aabb.position.x,aabb.position.y);
-	print (offset);
-	print(mesh.global_transform.origin);
+	offset = Vector3(aabb.position.x,0,aabb.position.z);
 	mesh.transform.origin.x += 1;
-	
-	#container = Spatial.new();
-	#container.add_child(mesh);
-	
 	meshInstance.get_parent().remove_child(meshInstance);
 	
-	
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
