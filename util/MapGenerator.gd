@@ -13,6 +13,7 @@ var baseGeometry;
 var tileLibrary = [];
 
 var mapNode = null;
+var pathUtil;
 
 func GenerateMap(ground,newGridSize):
 	gridSize = newGridSize;
@@ -46,14 +47,14 @@ func GenerateLayout():
 			#var tIndex = randi() % tileLibrary.size() + 1;+ ")");
 			#default every tile to grass
 			grid[x][z] = 1;
-			
-
-		
+	
 	for x in range(0,gridSize):
 		for z in range(0,gridSize):	
 			gridGeometry[x][z] = tileLibrary[grid[x][z]].NewInstance(x,z,x*gridSize+z);
-		
-		
+	
+	pathUtil = MAStar.new(grid);
+	
+	
 func GenerateModel():
 	mapNode = Spatial.new();
 	mapNode.name = "mapGeometry";
@@ -101,7 +102,6 @@ func SetTile(x,z,tileIndex):
 	mapNode.add_child(gridGeometry[x][z]);
 
 func ValidateGridUpdate(x,z,tileIndex):
-	var test = AStar2D.new();
 	#test.
 	
 	return true;
