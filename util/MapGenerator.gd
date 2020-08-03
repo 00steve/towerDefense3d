@@ -28,8 +28,13 @@ func GenerateLayout():
 	for x in range(0,mapGrid.GridSize.x):
 		for z in range(0,mapGrid.GridSize.y):
 			mapGrid.TileTypeID[x][z] = MapTile.Type_Open;
-
-	var oCount = int((mapGrid.GridSize.x + mapGrid.GridSize.y) / 2);
+	var oCount;
+	var xSize = mapGrid.GridSize.x;
+	var zSize = mapGrid.GridSize.y;
+	if(xSize > zSize):
+		oCount = zSize-1;
+	else:
+		oCount = xSize-1;
 	var rx;
 	var rz;
 	while(oCount > 0):
