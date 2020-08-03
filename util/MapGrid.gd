@@ -18,9 +18,11 @@ func _init(newGridSize):
 func _ready():
 	pass;
 
-func AddStartTile():
-	pass;
+func AddStartTile(tile):
+	startTile.append(tile);
 
+func AddEndTile(tile):
+	endTile.append(tile);
 
 func GetCenterPoint():
 	return centerPoint;

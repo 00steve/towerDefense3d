@@ -31,8 +31,8 @@ func GenerateMap():
 		var g = $mapGeometry;
 		self.remove_child($mapGeometry);
 		g.free();
-	var width = randi() % 5 * 2 + 3;
-	mapGenerator.GenerateMap(Vector2(width,9));
+	var width = randi() % 3 * 2 + 7;
+	mapGenerator.GenerateMap(Vector2(width,13));
 	mapGenerator.SetDefaultLayout();
 	mapGrid = mapGenerator.GetMapGrid();
 		

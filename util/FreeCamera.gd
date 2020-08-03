@@ -15,6 +15,7 @@ func _ready():
 	cameraRotation = Vector3(-25,0,0);
 	cameraPosition = Vector3(0,10,0);
 	cameraVelocity = Vector3(0,0,0);
+	newCameraVelocity = Vector3(0,0,0);
 	if(focalPoint == null):
 		focalPoint = Vector3(0,0,0);
 
@@ -23,7 +24,7 @@ func _process(delta):
 	cameraVelocity = (cameraVelocity * 3 + newCameraVelocity) / 4;
 	
 	cameraRotation.y += cameraVelocity.x * delta;
-	cameraPosition = Vector3(sin(cameraRotation.y)*10,10,cos(cameraRotation.y)*10);
+	cameraPosition = Vector3(sin(cameraRotation.y)*15,7,cos(cameraRotation.y)*15);
 	#cameraPosition = cameraPosition + cameraVelocity * delta;
 	self.transform.origin = cameraPosition + focalPoint;
 	self.transform = self.transform.looking_at(focalPoint,Vector3(0,1,0));

@@ -16,9 +16,14 @@ var targetDistance;
 var node = null;
 var typeID = null;
 
+#shit for path finding
+var checked;
+var TileOffset;
+
 func _init():
 	targetDistance = -1;
 	typeID = Type_Undefined;
+	checked = false;
 
 func GetNode():
 	return node;
@@ -35,7 +40,9 @@ func Setup(meshInstance,newTypeID):
 	meshInstance.get_parent().remove_child(meshInstance);
 	var aabb = mesh.get_aabb();
 	offset = Vector3(aabb.position.x,0,aabb.position.z);
-	print(offset);
-	#offset = Vector3(-.5,0,-.5);
-	
+	if(typeID == Type_Base or typeID == Type_Spawn or typeID == Type_Open):
+		solid = false;
+	else:
+		solid = true;
+
 	

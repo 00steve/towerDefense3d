@@ -11,16 +11,16 @@ var tileLibrary = [];
 
 var mapNode = null;
 var mapGrid = null;
-var mapValidate = null;
+var mapPath = null;
 
 func _init(newBaseGeometry):
 	tileLibrary.resize(16);
 	ParseGeometry(newBaseGeometry);
-	mapValidate = MAStar.new();
+	mapPath = MAStar.new();
 
 func GenerateMap(newGridSize):
 	mapGrid = MapGrid.new(newGridSize);
-	mapValidate.SetGrid(mapGrid);
+	mapPath.SetGrid(mapGrid);
 	GenerateLayout();
 	GenerateModel();
 
@@ -91,6 +91,8 @@ func GenerateMapTileInstance(tile,offsetX,offsetZ,newId):
 	mapTile.pointWeight = tile.pointWeight;
 	#mapTile.tartgetDistance = -1;
 	mapTile.node = container;
+	mapTile.TileOffset = Vector3(offsetX,0,offsetZ);
+	
 	return mapTile;
 
 func GenerateModel():
@@ -128,7 +130,10 @@ func SetDefaultLayout():
 	SetTile(int(mapGrid.GridSize.x/2),0,MapTile.Type_Spawn);
 
 func SetTile(x,z,tileIndex):
-	ValidateGridUpdate(x,z,tileIndex);
+
+	
+	
+	#ValidateGridUpdate(x,z,tileIndex);
 	var oldTile = mapGrid.Tile[x][z];
 	if(oldTile):
 		var isChild = mapNode.get_node(oldTile.GetNode().get_name());
@@ -136,9 +141,20 @@ func SetTile(x,z,tileIndex):
 			isChild.free();
 	mapGrid.TileTypeID[x][z] = tileIndex;
 	mapGrid.Tile[x][z] = GenerateMapTileInstance(tileLibrary[mapGrid.TileTypeID[x][z]],x,z,x*mapGrid.GridSize.x+z);
+	
 	mapNode.add_child(mapGrid.Tile[x][z].GetNode());
+	
+	
+	if(tileIndex == MapTile.Type_Spawn):
+		mapGrid.AddStartTile(mapGrid.Tile[x][z]);
+		mapPath.Build();
+	if(tileIndex == MapTile.Type_Base):
+		mapGrid.AddEndTile(mapGrid.Tile[x][z]);
+		mapPath.Build();
+	
 
 func ValidateGridUpdate(x,z,tileIndex):
-	print("validate grid update to tile (" + String(x) + "," + String(z) + ") type = " + String(tileIndex));
+	#print("validate grid update to tile (" + String(x) + "," + String(z) + ") type = " + String(tileIndex));
 	#mapValidate.TestUpdate(x,z,tileIndex);
+	#mapPath.BuildPaths();
 	return true;
