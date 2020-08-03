@@ -1,5 +1,5 @@
+extends Node
 class_name MapGrid
-
 
 var GridSize = null;
 var MapNode = null;
@@ -7,6 +7,8 @@ var TileTypeID = null;
 var Tile = null;
 var GridGeometry = null;
 var centerPoint;
+var startTile = [];
+var endTile = [];
 
 func _init(newGridSize):
 	SetGridSize(newGridSize);
@@ -14,6 +16,9 @@ func _init(newGridSize):
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	pass;
+
+func AddStartTile():
 	pass;
 
 

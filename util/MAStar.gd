@@ -26,7 +26,6 @@ func BuildPath(xStart,zStart,xEnd,zEnd):
 		currentTile = tileQueue.pop_front();
 
 func ProcessTile(tile):
-	
 	pass;
 	
 	
@@ -36,3 +35,4 @@ func ResetTiles():
 	
 func SetGrid(newGrid):
 	grid = newGrid;
+	pass;

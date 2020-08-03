@@ -12,8 +12,8 @@ var focalPoint;
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	cameraRotation = Vector3(-45,-45,0);
-	cameraPosition = Vector3(1,10,1);
+	cameraRotation = Vector3(-25,0,0);
+	cameraPosition = Vector3(0,10,0);
 	cameraVelocity = Vector3(0,0,0);
 	if(focalPoint == null):
 		focalPoint = Vector3(0,0,0);

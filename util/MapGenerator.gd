@@ -3,6 +3,7 @@ class_name MapGenerator
 
 var MapTile = load("res://util/MapTile.gd");
 var MapGrid = load("res://util/MapGrid.gd");
+var MAStar = load("res://util/MAStar.gd");
 
 var layout;
 var parsedGeometry = false;
@@ -19,19 +20,27 @@ func _init(newBaseGeometry):
 
 func GenerateMap(newGridSize):
 	mapGrid = MapGrid.new(newGridSize);
-	#mapValidate.SetGrid(mapGrid);
+	mapValidate.SetGrid(mapGrid);
 	GenerateLayout();
 	GenerateModel();
 
 func GenerateLayout():
 	for x in range(0,mapGrid.GridSize.x):
 		for z in range(0,mapGrid.GridSize.y):
-			mapGrid.TileTypeID[x][z] = 1;
+			mapGrid.TileTypeID[x][z] = MapTile.Type_Open;
+
+	var oCount = int((mapGrid.GridSize.x + mapGrid.GridSize.y) / 2);
+	var rx;
+	var rz;
+	while(oCount > 0):
+		rx = randi() % int(mapGrid.GridSize.x);
+		rz = randi() % int(mapGrid.GridSize.y);
+		mapGrid.TileTypeID[rx][rz] = MapTile.Type_Wall;
+		oCount -= 1;
 
 	for x in range(0,mapGrid.GridSize.x):
 		for z in range(0,mapGrid.GridSize.y):
 			mapGrid.Tile[x][z] = GenerateMapTileInstance(tileLibrary[mapGrid.TileTypeID[x][z]],x,z,x*mapGrid.GridSize.x+z);
-
 
 func GenerateMapTileInstance(tile,offsetX,offsetZ,newId):
 	#create all of the needed new instances of objects
@@ -45,7 +54,6 @@ func GenerateMapTileInstance(tile,offsetX,offsetZ,newId):
 	#set up the new mesh
 	newMesh.mesh = tile.mesh.get_mesh();
 	container.add_child(newMesh);
-	
 	#create an area for registering collisions
 	container.add_child(newArea);
 	
@@ -55,9 +63,19 @@ func GenerateMapTileInstance(tile,offsetX,offsetZ,newId):
 	newArea.add_child(newCollisionShape);
 	
 	#setup the container properties (the object that gets sent back as a "tile")
-	var finalPos = Vector3(offsetX-tile.offset.x,0,offsetZ-tile.offset.z);
-	#don't use global_transform as the container isn't in the parent scene yet
+	var rotation = Vector3(0,0,0);
+	#depending on the type, give it a rotation
+	#if(tile.GetTypeID() == 1):#or tile.GetTypeID() == 2)
+	rotation = Vector3(0,randi()%4*1.57079632679,0);
+	newMesh.set_rotation(rotation);
+
+	var finalPos = Vector3(
+		offsetX - tile.offset.x,
+		0,
+		offsetZ - tile.offset.z);
+
 	container.transform.origin = finalPos; 
+	
 	container.name = "grid" + String(offsetX) + "_" + String(offsetZ);
 	
 	#set up specific tile object properties
@@ -70,8 +88,9 @@ func GenerateMapTileInstance(tile,offsetX,offsetZ,newId):
 	mapTile.node = container;
 	return mapTile;
 
-
 func GenerateModel():
+	if(mapNode):
+		mapNode.free();
 	mapNode = Spatial.new();
 	mapNode.name = "mapGeometry";
 	for x in range(0,mapGrid.GridSize.x):
@@ -93,14 +112,15 @@ func ParseGeometry(baseGeometry):
 		if index == 0:
 			continue;
 		var mapTile = MapTile.new();
-		mapTile.Setup(c);
+		mapTile.Setup(c,index);
 		tileLibrary[index] = mapTile;
 	parsedGeometry = true;
 
 func SetDefaultLayout():
 	#set default base position bottom middle of map
-	SetTile(int(mapGrid.GridSize.x/2),mapGrid.GridSize.y-1,3);
+	SetTile(int(mapGrid.GridSize.x/2),mapGrid.GridSize.y-1,MapTile.Type_Base);
 	#set spawn hold at top middle of map
+	SetTile(int(mapGrid.GridSize.x/2),0,MapTile.Type_Spawn);
 
 func SetTile(x,z,tileIndex):
 	ValidateGridUpdate(x,z,tileIndex);
@@ -114,6 +134,6 @@ func SetTile(x,z,tileIndex):
 	mapNode.add_child(mapGrid.Tile[x][z].GetNode());
 
 func ValidateGridUpdate(x,z,tileIndex):
-
 	print("validate grid update to tile (" + String(x) + "," + String(z) + ") type = " + String(tileIndex));
+	#mapValidate.TestUpdate(x,z,tileIndex);
 	return true;
