@@ -2,74 +2,53 @@ extends Node
 class_name MapGenerator
 
 var MapTile = load("res://util/MapTile.gd");
+var MapGrid = load("res://util/MapGrid.gd");
 
-var gridSize;
 var layout;
-var grid;
-var gridGeometry;
 var parsedGeometry = false;
 
 var baseGeometry;
 var tileLibrary = [];
 
 var mapNode = null;
-var pathUtil;
+var mapGrid = null;
 
 func GenerateMap(ground,newGridSize):
-	gridSize = newGridSize;
+	mapGrid = MapGrid.new(newGridSize);
 	baseGeometry = ground;
 	tileLibrary.resize(16);
 	if !parsedGeometry:
 		ParseGeometry();
 	GenerateLayout();
 	GenerateModel();
-	
-
-
-	print("generate map");
-
-
-
-
 
 func GenerateLayout():
-	grid = [];
-	grid.resize(gridSize);
-	gridGeometry = [];
-	gridGeometry.resize(gridSize);
-	for x in range(0,gridSize):
-		grid[x] = [];
-		grid[x].resize(gridSize);
-		gridGeometry[x] = [];
-		gridGeometry[x].resize(gridSize);
-		for z in range(0,gridSize):
-			#grid[x][z] = 1;
-			#var tIndex = randi() % tileLibrary.size() + 1;+ ")");
-			#default every tile to grass
-			grid[x][z] = 1;
-	
-	for x in range(0,gridSize):
-		for z in range(0,gridSize):	
-			gridGeometry[x][z] = tileLibrary[grid[x][z]].NewInstance(x,z,x*gridSize+z);
-	
-	pathUtil = MAStar.new(grid);
-	
-	
+	for x in range(0,mapGrid.GridSize.x):
+		for z in range(0,mapGrid.GridSize.y):
+			mapGrid.Grid[x][z] = 1;
+
+	for x in range(0,mapGrid.GridSize.x):
+		for z in range(0,mapGrid.GridSize.y):
+			mapGrid.GridGeometry[x][z] = tileLibrary[mapGrid.Grid[x][z]].NewInstance(x,z,x*mapGrid.GridSize.x+z);
+
 func GenerateModel():
 	mapNode = Spatial.new();
 	mapNode.name = "mapGeometry";
-	for x in range(0,gridSize):
-		for z in range(0,gridSize):
-			#print("Assign tile to map at offset (" + String(x) + "," + String(z) + ")");
-			mapNode.add_child(gridGeometry[x][z]);
+	for x in range(0,mapGrid.GridSize.x):
+		for z in range(0,mapGrid.GridSize.y):
+			
+			print("Assign tile to map at offset (" + String(x) + "," + String(z) + ")");
+			mapNode.add_child(mapGrid.GridGeometry[x][z]);
 
 	print("map geom added to mapNodes object");
 	print("Number of tiles : " + String(mapNode.get_children().size()));
-		
+
 func GetMapNode():
 	return mapNode;
-		
-		
+
+func GetMapGrid():
+	return mapGrid;
+
 func ParseGeometry():
 	for c in baseGeometry.get_children():
 		if !c.is_class("MeshInstance"):
@@ -87,19 +66,19 @@ func ParseGeometry():
 
 func SetDefaultLayout():
 	#set default base position bottom middle of map
-	SetTile(int(gridSize/2),gridSize-1,3);
+	SetTile(int(mapGrid.GridSize.x/2),mapGrid.GridSize.y-1,3);
 	#set spawn hold at top middle of map
 
 func SetTile(x,z,tileIndex):
 	ValidateGridUpdate(x,z,tileIndex);
-	var oldTile = gridGeometry[x][z];
+	var oldTile = mapGrid.GridGeometry[x][z];
 	if(oldTile):
 		var isChild = mapNode.get_node(oldTile.get_name());
 		if(isChild):
 			isChild.free();
-	grid[x][z] = tileIndex;
-	gridGeometry[x][z] = tileLibrary[grid[x][z]].NewInstance(x,z,x*gridSize+z);
-	mapNode.add_child(gridGeometry[x][z]);
+	mapGrid.Grid[x][z] = tileIndex;
+	mapGrid.GridGeometry[x][z] = tileLibrary[mapGrid.Grid[x][z]].NewInstance(x,z,x*mapGrid.GridSize.x+z);
+	mapNode.add_child(mapGrid.GridGeometry[x][z]);
 
 func ValidateGridUpdate(x,z,tileIndex):
 	#test.

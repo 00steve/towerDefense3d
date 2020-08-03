@@ -29,7 +29,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://util/MapGenerator.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "MapGrid",
 "language": "GDScript",
 "path": "res://util/MapGrid.gd"

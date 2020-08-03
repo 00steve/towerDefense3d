@@ -1,10 +1,10 @@
 #warning-ignore-all:unused_variable
-
 extends Spatial
-
-
-
 var mapGenerator = preload("res://util/MapGenerator.gd").new();
+var MapGrid = load("res://util/MapGrid.gd");
+
+var mapGrid = null;
+var ground = null;
 
 
 func _input(event):
@@ -19,7 +19,7 @@ func _ready():
 
 
 func GenerateMap():
-	mapGenerator.GenerateMap($ground,9);
+	mapGenerator.GenerateMap($ground,Vector2(5,9));
 	mapGenerator.SetDefaultLayout();
 	var ng = self.get_node("ground");
 	if(ng):
@@ -30,10 +30,10 @@ func GenerateMap():
 		var g = $mapGeometry;
 		self.remove_child($mapGeometry);
 		g.free();
-		
+	
+	mapGrid = mapGenerator.GetMapGrid();
 		
 	self.add_child(mapGenerator.GetMapNode());
 	print("children count : " + String(self.get_children().size()));
 
-	
-	self.get_parent().get_node("Camera").SetFocalPoint(Vector3(4.5,0,4.5));
+	self.get_parent().get_node("Camera").SetFocalPoint(mapGrid.GetCenterPoint());
