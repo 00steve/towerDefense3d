@@ -6,19 +6,18 @@ var MapGrid = load("res://util/MapGrid.gd");
 
 var layout;
 var parsedGeometry = false;
-
-var baseGeometry;
 var tileLibrary = [];
 
 var mapNode = null;
 var mapGrid = null;
 
-func GenerateMap(ground,newGridSize):
-	mapGrid = MapGrid.new(newGridSize);
-	baseGeometry = ground;
+func _init(newBaseGeometry):
 	tileLibrary.resize(16);
-	if !parsedGeometry:
-		ParseGeometry();
+	ParseGeometry(newBaseGeometry);
+
+
+func GenerateMap(newGridSize):
+	mapGrid = MapGrid.new(newGridSize);
 	GenerateLayout();
 	GenerateModel();
 
@@ -49,7 +48,7 @@ func GetMapNode():
 func GetMapGrid():
 	return mapGrid;
 
-func ParseGeometry():
+func ParseGeometry(baseGeometry):
 	for c in baseGeometry.get_children():
 		if !c.is_class("MeshInstance"):
 			continue;

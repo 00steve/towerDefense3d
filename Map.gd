@@ -1,36 +1,37 @@
 #warning-ignore-all:unused_variable
 extends Spatial
-var mapGenerator = preload("res://util/MapGenerator.gd").new();
+var MapGenerator = preload("res://util/MapGenerator.gd");
 var MapGrid = load("res://util/MapGrid.gd");
 
+var mapGenerator = null;
 var mapGrid = null;
 var ground = null;
 
+func _init():
+	pass;
 
 func _input(event):
-	if Input.is_action_pressed("regenerate_map"):
+	if event is InputEventKey and event.pressed and event.scancode == KEY_R:
 		GenerateMap();
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	mapGenerator = MapGenerator.new($ground);
+	$ground.free();
 	GenerateMap();
 
 
 
 func GenerateMap():
-	mapGenerator.GenerateMap($ground,Vector2(5,9));
-	mapGenerator.SetDefaultLayout();
-	var ng = self.get_node("ground");
+	var ng = self.has_node("mapGeometry");
 	if(ng):
-		var g = $ground;
-		self.remove_child($ground);
-		g.free();
-	else:
 		var g = $mapGeometry;
 		self.remove_child($mapGeometry);
 		g.free();
-	
+	var width = randi() % 5 * 2 + 3;
+	mapGenerator.GenerateMap(Vector2(width,9));
+	mapGenerator.SetDefaultLayout();
 	mapGrid = mapGenerator.GetMapGrid();
 		
 	self.add_child(mapGenerator.GetMapNode());
