@@ -10,37 +10,73 @@ var tileLibrary = [];
 
 var mapNode = null;
 var mapGrid = null;
+var mapValidate = null;
 
 func _init(newBaseGeometry):
 	tileLibrary.resize(16);
 	ParseGeometry(newBaseGeometry);
-
+	mapValidate = MAStar.new();
 
 func GenerateMap(newGridSize):
 	mapGrid = MapGrid.new(newGridSize);
+	#mapValidate.SetGrid(mapGrid);
 	GenerateLayout();
 	GenerateModel();
 
 func GenerateLayout():
 	for x in range(0,mapGrid.GridSize.x):
 		for z in range(0,mapGrid.GridSize.y):
-			mapGrid.Grid[x][z] = 1;
+			mapGrid.TileTypeID[x][z] = 1;
 
 	for x in range(0,mapGrid.GridSize.x):
 		for z in range(0,mapGrid.GridSize.y):
-			mapGrid.GridGeometry[x][z] = tileLibrary[mapGrid.Grid[x][z]].NewInstance(x,z,x*mapGrid.GridSize.x+z);
+			mapGrid.Tile[x][z] = GenerateMapTileInstance(tileLibrary[mapGrid.TileTypeID[x][z]],x,z,x*mapGrid.GridSize.x+z);
+
+
+func GenerateMapTileInstance(tile,offsetX,offsetZ,newId):
+	#create all of the needed new instances of objects
+	var mapTile = MapTile.new();
+	var container = Spatial.new();
+	var newMesh = MeshInstance.new();
+	var newArea = Area.new();
+	var newCollisionShape = CollisionShape.new();
+	var newBoxShape = BoxShape.new();
+	
+	#set up the new mesh
+	newMesh.mesh = tile.mesh.get_mesh();
+	container.add_child(newMesh);
+	
+	#create an area for registering collisions
+	container.add_child(newArea);
+	
+	#create the shape that the area uses for collisions
+	newBoxShape.set_extents(Vector3(1,.1,1));
+	newCollisionShape.set_shape(newBoxShape);
+	newArea.add_child(newCollisionShape);
+	
+	#setup the container properties (the object that gets sent back as a "tile")
+	var finalPos = Vector3(offsetX-tile.offset.x,0,offsetZ-tile.offset.z);
+	#don't use global_transform as the container isn't in the parent scene yet
+	container.transform.origin = finalPos; 
+	container.name = "grid" + String(offsetX) + "_" + String(offsetZ);
+	
+	#set up specific tile object properties
+	mapTile.mesh = tile.mesh;
+	mapTile.offset = tile.offset;
+	mapTile.solid = tile.solid;
+	mapTile.pointID = newId;
+	mapTile.pointWeight = tile.pointWeight;
+	#mapTile.tartgetDistance = -1;
+	mapTile.node = container;
+	return mapTile;
+
 
 func GenerateModel():
 	mapNode = Spatial.new();
 	mapNode.name = "mapGeometry";
 	for x in range(0,mapGrid.GridSize.x):
 		for z in range(0,mapGrid.GridSize.y):
-			
-			print("Assign tile to map at offset (" + String(x) + "," + String(z) + ")");
-			mapNode.add_child(mapGrid.GridGeometry[x][z]);
-
-	print("map geom added to mapNodes object");
-	print("Number of tiles : " + String(mapNode.get_children().size()));
+			mapNode.add_child(mapGrid.Tile[x][z].GetNode());
 
 func GetMapNode():
 	return mapNode;
@@ -58,9 +94,7 @@ func ParseGeometry(baseGeometry):
 			continue;
 		var mapTile = MapTile.new();
 		mapTile.Setup(c);
-		var cLibInd = tileLibrary.size();
 		tileLibrary[index] = mapTile;
-
 	parsedGeometry = true;
 
 func SetDefaultLayout():
@@ -70,16 +104,16 @@ func SetDefaultLayout():
 
 func SetTile(x,z,tileIndex):
 	ValidateGridUpdate(x,z,tileIndex);
-	var oldTile = mapGrid.GridGeometry[x][z];
+	var oldTile = mapGrid.Tile[x][z];
 	if(oldTile):
-		var isChild = mapNode.get_node(oldTile.get_name());
+		var isChild = mapNode.get_node(oldTile.GetNode().get_name());
 		if(isChild):
 			isChild.free();
-	mapGrid.Grid[x][z] = tileIndex;
-	mapGrid.GridGeometry[x][z] = tileLibrary[mapGrid.Grid[x][z]].NewInstance(x,z,x*mapGrid.GridSize.x+z);
-	mapNode.add_child(mapGrid.GridGeometry[x][z]);
+	mapGrid.TileTypeID[x][z] = tileIndex;
+	mapGrid.Tile[x][z] = GenerateMapTileInstance(tileLibrary[mapGrid.TileTypeID[x][z]],x,z,x*mapGrid.GridSize.x+z);
+	mapNode.add_child(mapGrid.Tile[x][z].GetNode());
 
 func ValidateGridUpdate(x,z,tileIndex):
-	#test.
-	
+
+	print("validate grid update to tile (" + String(x) + "," + String(z) + ") type = " + String(tileIndex));
 	return true;

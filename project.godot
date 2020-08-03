@@ -19,7 +19,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/zylann.hterrain/hterrain_resource_saver.gd"
 }, {
-"base": "Reference",
+"base": "Node",
 "class": "MAStar",
 "language": "GDScript",
 "path": "res://util/MAStar.gd"
@@ -34,7 +34,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://util/MapGrid.gd"
 }, {
-"base": "Reference",
+"base": "Node",
 "class": "MapTile",
 "language": "GDScript",
 "path": "res://util/MapTile.gd"

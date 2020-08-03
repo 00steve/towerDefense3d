@@ -1,5 +1,7 @@
 #warning-ignore-all:unused_variable
 extends Spatial
+
+#included classes
 var MapGenerator = preload("res://util/MapGenerator.gd");
 var MapGrid = load("res://util/MapGrid.gd");
 
