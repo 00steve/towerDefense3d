@@ -12,11 +12,12 @@ var endTile = [];
 
 func _init(newGridSize):
 	SetGridSize(newGridSize);
-	
+	self.name = "MapGrid";
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass;
+	
 
 func AddStartTile(tile):
 	startTile.append(tile);
