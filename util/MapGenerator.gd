@@ -158,7 +158,7 @@ func SetTile(x,z,tileIndex):
 	mapNode.add_child(mapGrid.Tile[x][z].GetNode());
 	
 	if(tileIndex == MapTile.Type_Spawn):
-		mapGrid.Tile[x][z].node.add_child(Spawner.new());
+		mapGrid.Tile[x][z].node.add_child(Spawner.new(mapGrid.Tile[x][z]));
 		mapGrid.AddStartTile(mapGrid.Tile[x][z]);
 		mapPath.Build();
 	if(tileIndex == MapTile.Type_Base):

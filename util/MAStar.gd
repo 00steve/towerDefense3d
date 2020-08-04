@@ -35,7 +35,7 @@ func Build():
 	while(currentTile):
 		#do work with tile
 		ProcessTile(currentTile);
-		#currentTile.node.transform.origin.y = currentTile.pathScore*.05;
+		#currentTile.node.transform.origin.y = currentTile.pathScore*-.05;
 		currentTile = tileQueue.pop_front();
 
 func ProcessTile(tile):

@@ -7,23 +7,27 @@ var Monster = load("res://util/Monster.gd");
 #objects
 var origin;
 var map;
+var tile;
 var random = null;
 
 #settings
 var timeBetweenSpawns;
 var timeUntilNextSpawn;
 var spawnRadius;
+var maxSpawns;
 
 #statistics
 var spawnCount;
 
 
-func _init():
+func _init(newTile):
+	tile = newTile;
 	random = RandomNumberGenerator.new();
 	
-	timeBetweenSpawns = 1;
+	timeBetweenSpawns = .25;
 	timeUntilNextSpawn = timeBetweenSpawns;
 	spawnRadius = .25;
+	maxSpawns = 300;
 	
 	spawnCount = 0;
 	
@@ -41,6 +45,8 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 
 func _process(delta):
+	if(maxSpawns == spawnCount):
+		return;
 	timeUntilNextSpawn -= delta;
 	if(timeUntilNextSpawn > 0):
 		return;
@@ -53,5 +59,5 @@ func Spawn():
 	var rot = random.randf_range(-3.14,3.14);
 	var dist = random.randf_range(0,spawnRadius);
 	var position = Vector3(origin.x + sin(rot)*dist, 0 ,origin.z + cos(rot)*dist);
-	map.find_node("Monsters").add_child(Monster.new(map.mapGrid,position));
+	map.find_node("Monsters").add_child(Monster.new(map.mapGrid,tile,position));
 	pass;
