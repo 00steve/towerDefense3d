@@ -23,6 +23,7 @@ func GenerateMap(newGridSize):
 	mapPath.SetGrid(mapGrid);
 	GenerateLayout();
 	GenerateModel();
+	
 
 func GenerateLayout():
 	for x in range(0,mapGrid.GridSize.x):
@@ -70,7 +71,6 @@ func GenerateMapTileInstance(tile,offsetX,offsetZ,newId):
 	#setup the container properties (the object that gets sent back as a "tile")
 	var rotation = Vector3(0,0,0);
 	#depending on the type, give it a rotation
-	#if(tile.GetTypeID() == 1):#or tile.GetTypeID() == 2)
 	rotation = Vector3(0,randi()%4*1.57079632679,0);
 	newMesh.set_rotation(rotation);
 
@@ -128,6 +128,23 @@ func SetDefaultLayout():
 	SetTile(int(mapGrid.GridSize.x/2),mapGrid.GridSize.y-1,MapTile.Type_Base);
 	#set spawn hold at top middle of map
 	SetTile(int(mapGrid.GridSize.x/2),0,MapTile.Type_Spawn);
+
+func SetMultiplayerLayout(playerCount):
+	if(playerCount > 2 and mapGrid.GridSize.x != mapGrid.GridSize.y):
+		print("can't create multiplyer map for more than two players if the map is not square");
+		return;
+	if(int(mapGrid.GridSize.y)%2!=1 or (playerCount > 2 and int(mapGrid.GridSize.x)%2!=1)):
+		print("can't create multiplayer map, grid must have an odd number of tiles");
+		return;
+	SetTile(int(mapGrid.GridSize.x/2),mapGrid.GridSize.y-1,MapTile.Type_Base);
+	SetTile(int(mapGrid.GridSize.x/2),0,MapTile.Type_Base);
+	if(playerCount > 2):
+		SetTile(mapGrid.GridSize.x-1,int(mapGrid.GridSize.y/2),MapTile.Type_Base);
+	if(playerCount > 3):
+		SetTile(0,int(mapGrid.GridSize.y/2),MapTile.Type_Base);
+
+	#set spawn hold at top middle of map
+	SetTile(int(mapGrid.GridSize.x/2),int(mapGrid.GridSize.y/2),MapTile.Type_Spawn);
 
 func SetTile(x,z,tileIndex):
 

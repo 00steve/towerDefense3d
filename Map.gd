@@ -32,8 +32,9 @@ func GenerateMap():
 		self.remove_child($mapGeometry);
 		g.free();
 	var width = randi() % 3 * 2 + 7;
-	mapGenerator.GenerateMap(Vector2(width,13));
+	mapGenerator.GenerateMap(Vector2(13,13));
 	mapGenerator.SetDefaultLayout();
+	#mapGenerator.SetMultiplayerLayout(2);
 	mapGrid = mapGenerator.GetMapGrid();
 		
 	self.add_child(mapGenerator.GetMapNode());

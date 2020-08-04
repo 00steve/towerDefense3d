@@ -10,11 +10,13 @@ const Type_Wall = 4;
 var mesh = null;
 var offset = null;
 var solid = false;
+var pathScore;
 var pointID;
 var pointWeight;
 var targetDistance;
 var node = null;
 var typeID = null;
+var linkedTile = null;
 
 #shit for path finding
 var checked;
@@ -24,7 +26,8 @@ func _init():
 	targetDistance = -1;
 	typeID = Type_Undefined;
 	checked = false;
-
+	pathScore = 0;
+	
 func GetNode():
 	return node;
 
