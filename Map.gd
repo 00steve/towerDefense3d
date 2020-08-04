@@ -8,6 +8,7 @@ var MapGrid = load("res://util/MapGrid.gd");
 var mapGenerator = null;
 var mapGrid = null;
 var ground = null;
+var random = null;
 
 func _init():
 	pass;
@@ -19,6 +20,7 @@ func _input(event):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	random = RandomNumberGenerator.new();
 	mapGenerator = MapGenerator.new($ground);
 	$ground.free();
 	GenerateMap();
@@ -31,13 +33,14 @@ func GenerateMap():
 		var g = $mapGeometry;
 		self.remove_child($mapGeometry);
 		g.free();
-	var width = randi() % 3 * 2 + 7;
+		
+	var width = random.randi() % 3 * 2 + 7;
 	mapGenerator.GenerateMap(Vector2(13,13));
 	mapGenerator.SetDefaultLayout();
-	#mapGenerator.SetMultiplayerLayout(2);
+	#mapGenerator.SetMultiplayerLayout(4);
+	
 	mapGrid = mapGenerator.GetMapGrid();
 		
 	self.add_child(mapGenerator.GetMapNode());
-	print("children count : " + String(self.get_children().size()));
-
+	
 	self.get_parent().get_node("Camera").SetFocalPoint(mapGrid.GetCenterPoint());

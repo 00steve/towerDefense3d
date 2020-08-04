@@ -128,6 +128,8 @@ func SetDefaultLayout():
 	SetTile(int(mapGrid.GridSize.x/2),mapGrid.GridSize.y-1,MapTile.Type_Base);
 	#set spawn hold at top middle of map
 	SetTile(int(mapGrid.GridSize.x/2),0,MapTile.Type_Spawn);
+	#create a default gun
+	SetTile(int(mapGrid.GridSize.x/2),mapGrid.GridSize.y-2,MapTile.Type_Tower);
 
 func SetMultiplayerLayout(playerCount):
 	if(playerCount > 2 and mapGrid.GridSize.x != mapGrid.GridSize.y):

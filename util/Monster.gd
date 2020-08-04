@@ -26,7 +26,7 @@ func _init(newMapGrid,targetTile,newPosition):
 	
 	movementSpeed = 1;
 	targetRadius = .5;
-	wanderRatio = 4;
+	wanderRatio = 2;
 	height = .1;
 	
 	mapGrid = newMapGrid;
@@ -66,9 +66,9 @@ func PickTarget():
 	lowestScore = 9999;
 	var pathScore;
 	var tileIndex = Vector2(int(position.x),int(position.z));
-	if(tileIndex.x-1 > 0):
+	if(tileIndex.x > 0):
 		CheckTile(mapGrid.Tile[tileIndex.x-1][tileIndex.y]);
-	if(tileIndex.y-1 > 0):
+	if(tileIndex.y > 0):
 		CheckTile(mapGrid.Tile[tileIndex.x][tileIndex.y-1]);
 	if(tileIndex.x+1 < mapGrid.GridSize.x):
 		CheckTile(mapGrid.Tile[tileIndex.x+1][tileIndex.y]);

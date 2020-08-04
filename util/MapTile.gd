@@ -6,6 +6,7 @@ const Type_Base = 1;
 const Type_Spawn = 2;
 const Type_Open = 3;
 const Type_Wall = 4;
+const Type_Tower = 5;
 
 var mesh = null;
 var offset = null;

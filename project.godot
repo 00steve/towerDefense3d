@@ -48,6 +48,11 @@ _global_script_classes=[ {
 "class": "Spawner",
 "language": "GDScript",
 "path": "res://util/Spawner.gd"
+}, {
+"base": "Node",
+"class": "Tower",
+"language": "GDScript",
+"path": "res://util/Tower.gd"
 } ]
 _global_script_class_icons={
 "HTerrainDataLoader": "",
@@ -57,7 +62,8 @@ _global_script_class_icons={
 "MapGrid": "",
 "MapTile": "",
 "Monster": "",
-"Spawner": ""
+"Spawner": "",
+"Tower": ""
 }
 
 [application]
