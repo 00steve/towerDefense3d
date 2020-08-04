@@ -28,6 +28,9 @@ func _init():
 	checked = false;
 	pathScore = 0;
 	
+func AddSpawner():
+	pass;
+	
 func GetNode():
 	return node;
 
@@ -47,5 +50,6 @@ func Setup(meshInstance,newTypeID):
 		solid = false;
 	else:
 		solid = true;
+		
 
 	

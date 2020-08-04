@@ -4,6 +4,7 @@ class_name MapGenerator
 var MapTile = load("res://util/MapTile.gd");
 var MapGrid = load("res://util/MapGrid.gd");
 var MAStar = load("res://util/MAStar.gd");
+var Spawner = load("res://util/Spawner.gd");
 
 var layout;
 var parsedGeometry = false;
@@ -89,7 +90,6 @@ func GenerateMapTileInstance(tile,offsetX,offsetZ,newId):
 	mapTile.solid = tile.solid;
 	mapTile.pointID = newId;
 	mapTile.pointWeight = tile.pointWeight;
-	#mapTile.tartgetDistance = -1;
 	mapTile.node = container;
 	mapTile.TileOffset = Vector3(offsetX,0,offsetZ);
 	
@@ -147,10 +147,6 @@ func SetMultiplayerLayout(playerCount):
 	SetTile(int(mapGrid.GridSize.x/2),int(mapGrid.GridSize.y/2),MapTile.Type_Spawn);
 
 func SetTile(x,z,tileIndex):
-
-	
-	
-	#ValidateGridUpdate(x,z,tileIndex);
 	var oldTile = mapGrid.Tile[x][z];
 	if(oldTile):
 		var isChild = mapNode.get_node(oldTile.GetNode().get_name());
@@ -161,8 +157,8 @@ func SetTile(x,z,tileIndex):
 	
 	mapNode.add_child(mapGrid.Tile[x][z].GetNode());
 	
-	
 	if(tileIndex == MapTile.Type_Spawn):
+		mapGrid.Tile[x][z].node.add_child(Spawner.new());
 		mapGrid.AddStartTile(mapGrid.Tile[x][z]);
 		mapPath.Build();
 	if(tileIndex == MapTile.Type_Base):

@@ -17,44 +17,33 @@ func _process(delta):
 
 
 func Build():
-	if(grid.startTile.size()==0):
-		print("no starts");
-		return;
+	#if(grid.startTile.size()==0):
+	#	print("no starts");
+	#	return;
 	if(grid.endTile.size()==0):
 		print("no ends");
 		return;
-	#print("Start points: " + String(grid.startTile.size()));
-	#print("End points: " + String(grid.endTile.size()));
-	#print("build paths");
-	
+
 	ResetTiles();
+	
 	tileQueue = [];
 	for i in grid.endTile:
 		tileQueue.append(i);
 		
-	#get start and end tiles from the grid
-	
-	#print("grid size " + String(grid.size()));
 	var currentTile = null;
-	#tileQueue.push_back(grid[xEnd][zEnd]);
-	#var currentTile;
 	currentTile = tileQueue.pop_front();
 	while(currentTile):
 		#do work with tile
 		ProcessTile(currentTile);
-		currentTile.node.transform.origin.y = currentTile.pathScore*.05;
+		#currentTile.node.transform.origin.y = currentTile.pathScore*.05;
 		currentTile = tileQueue.pop_front();
 
 func ProcessTile(tile):
 	if(tile.linkedTile):
 		tile.pathScore = tile.linkedTile.pathScore + 1;
-		print("tile path score: " + String(tile.pathScore));
 	else:
 		tile.pathScore = 1;
 		tile.checked = true;
-	print("----------tile---------");
-	#print("offset("+String(tile.TileOffset.x)+","+String(tile.TileOffset.z)+")");
-	#print("gridsize(" + String(grid.GridSize.x) + "," + String(grid.GridSize.y)+")");
 	var x = tile.TileOffset.x;
 	var z = tile.TileOffset.z;
 	if(x < grid.GridSize.x-1):
